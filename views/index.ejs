@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="http://cdn.pubnub.com/pubnub.min.js"></script>
+<script src="/js/d3.v3.min.js"></script>
+<script src="/js/rickshaw.js"></script>
+<script src="/js/Rickshaw.Fixtures.PubNub.js"></script>
+  </head>
+  <body>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <p>CPU Metrics of Openshift instance: </p> <a href="http://harshit-joshi.net/pubnub/hello-pubnub.html">http://harshit-joshi.net/pubnub/hello-pubnub.html</a> 
+    <div id="chart"></div>
+  <script>
+   var PUBNUB_demo = PUBNUB.init({
+        publish_key: 'pub-c-7d846157-da7e-40aa-b241-a671ba45986b',
+        subscribe_key: 'sub-c-7396d71c-f629-11e5-8679-02ee2ddab7fe'
+    });
+  </script>
+<script>
+
+var graph = new Rickshaw.Graph( {
+    element: document.getElementById("chart"),
+    width: 900,
+    height: 500,
+    renderer: 'line',
+    stroke: true,
+    preserve: true,
+    series: [
+        {
+            color: 'steelblue',
+            name: 'Cats',
+            data: []
+        },
+        {
+            color: 'lightblue',
+            name: 'Dogs',
+            data: []
+        }
+    ]
+});
+graph.render();
+</script>
+<script>
+new Rickshaw.Fixtures.PubNub({
+  channel: 'rickshaw-channel-2',
+  graph: graph
+});
+setInterval(function(){
+	  PUBNUB_demo.publish({
+	    channel: 'rickshaw-channel-2',
+	    message: {
+	      y: [
+	        Math.random() * 99, 
+	        Math.random() * 99
+	      ],
+	      x: new Date().getTime()
+	    }
+	  })
+	}, 1000);
+</script>
+  </body>
+
+</html>
